@@ -19,7 +19,27 @@ const db = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
+
+// Test database connection on startup
+async function testDatabaseConnection() {
+  try {
+    const [rows] = await db.execute('SELECT 1 as test');
+    console.log('✅ Database connection successful');
+    console.log('Connected to:', process.env.DB_HOST);
+    console.log('Database:', process.env.DB_NAME);
+  } catch (error) {
+    console.error('❌ Database connection failed:', error.message);
+    console.error('Host:', process.env.DB_HOST);
+    console.error('User:', process.env.DB_USER);
+    console.error('Database:', process.env.DB_NAME);
+  }
+}
+
+testDatabaseConnection();
 
 
 // Expose API URL to frontend
@@ -32,16 +52,29 @@ app.get('/config', (req, res) => {
 app.post('/tasks', async (req, res) => {
   const { taskName, taskDescription, dueDate } = req.body;
 
+  console.log('Received task creation request:', { taskName, taskDescription, dueDate });
+
+  if (!taskName || taskName.trim() === '') {
+    return res.status(400).json({ error: 'Task name is required' });
+  }
+
   try {
     const [result] = await db.execute(
       'INSERT INTO Tasks (task_name, task_description, due_date) VALUES (?, ?, ?)',
-      [taskName, taskDescription || null, dueDate || null]
+      [taskName.trim(), taskDescription || null, dueDate || null]
     );
 
+    console.log('Task created successfully with ID:', result.insertId);
     res.status(201).json({ message: 'Task created successfully', taskId: result.insertId });
   } catch (error) {
     console.error('Error creating task:', error);
-    res.status(500).json({ error: 'Could not create task' });
+    console.error('Error details:', {
+      code: error.code,
+      errno: error.errno,
+      sqlMessage: error.sqlMessage,
+      sqlState: error.sqlState
+    });
+    res.status(500).json({ error: 'Could not create task', details: error.message });
   }
 });
 

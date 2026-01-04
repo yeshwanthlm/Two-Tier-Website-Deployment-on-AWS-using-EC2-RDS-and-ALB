@@ -1,0 +1,7 @@
+DB_HOST="todo-instance.cq2lvy7ktbcg.us-east-1.rds.amazonaws.com"
+DB_USER="admin"
+DB_PASSWORD="Manjuyash1999!"
+DB_NAME="TodoAppDB"
+PORT="3306"
+
+API_BASE_URL="TodoApp-ALB-2030883464.us-east-1.elb.amazonaws.com"

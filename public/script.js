@@ -56,17 +56,28 @@ taskForm.addEventListener('submit', async function(event) {
   }
 
   try {
-    await fetch(`${API_BASE_URL}/tasks`, {
+    console.log('Sending task creation request:', { taskName, dueDate });
+    
+    const response = await fetch(`${API_BASE_URL}/tasks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ taskName, dueDate })
     });
 
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.error || `HTTP error! status: ${response.status}`);
+    }
+
+    console.log('Task created successfully:', result);
     fetchTasks();
     taskNameInput.value = '';
     taskDueDateInput.value = '';
+    
   } catch (error) {
     console.error('Error adding task:', error);
+    alert(`Failed to add task: ${error.message}`);
   }
 });
 
