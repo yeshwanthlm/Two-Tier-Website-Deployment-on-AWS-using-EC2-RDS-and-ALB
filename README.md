@@ -1,32 +1,96 @@
-# Two-Tier Website Deployment on AWS using EC2, RDS and ALB
+# Two-Tier Todo Application
 
-### Overview of Project ☁️
-This project involves deploying a To-Do List web application using a two-tier architecture on AWS. The architecture is designed for scalability, security, and cost-effectiveness by leveraging EC2 instances for the application layer and Amazon RDS for the database layer, with an Application Load Balancer (ALB) to distribute traffic.
+A production-ready two-tier web application built with Node.js, Express, and MySQL, designed for deployment on AWS EC2 with RDS database and Application Load Balancer.
 
-* Application Layer: Two EC2 instances host the Node.js application, ensuring high availability.
-* Database Layer: Amazon RDS is used to manage a MySQL database, storing application data securely.
-* Load Balancing & Routing: An Application Load Balancer (ALB) distributes incoming requests across both EC2 instances for fault tolerance.
-* Security & Networking: Security Groups, IAM roles, and VPC configurations are implemented for secure communication between components.
+## Architecture
+
+- **Frontend**: HTML, CSS, JavaScript (served as static files)
+- **Backend**: Node.js with Express.js REST API
+- **Database**: MySQL (AWS RDS)
+- **Load Balancer**: AWS Application Load Balancer
+- **Hosting**: AWS EC2 instances
+
+## Features
+
+- ✅ Create, read, update, and delete tasks
+- ✅ Task completion tracking
+- ✅ Due date management
+- ✅ Production-ready error handling
+- ✅ Health check endpoint for load balancer
+- ✅ Automatic database table creation
+- ✅ Graceful shutdown handling
+- ✅ Connection pooling and retry logic
+
+## Production Deployment
+
+### Prerequisites
+
+1. AWS EC2 instance with Node.js installed
+2. AWS RDS MySQL instance
+3. Application Load Balancer configured
+4. Security groups properly configured
+
+### Environment Configuration
+
+Create a `.env` file with your database credentials:
+
+```env
+DB_HOST=your-rds-endpoint.region.rds.amazonaws.com
+DB_USER=admin
+DB_PASSWORD=your-secure-password
+DB_NAME=TodoAppDB
+DB_PORT=3306
+API_BASE_URL=http://your-alb-dns-name.region.elb.amazonaws.com
+```
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd Two-Tier-Website-Deployment-on-AWS-using-EC2-RDS-and-ALB
+
+# Install dependencies
+npm install
+
+# Start the application
+npm start
+```
+
+### Health Check
+
+The application provides a health check endpoint at `/health` for load balancer monitoring.
+
+### API Endpoints
+
+- `GET /health` - Health check
+- `GET /tasks` - Get all tasks
+- `POST /tasks` - Create a new task
+- `GET /tasks/:id` - Get task by ID
+- `PUT /tasks/:id` - Update task
+- `DELETE /tasks/:id` - Delete task
+
+## Security Considerations
+
+- Environment variables are used for sensitive configuration
+- CORS is enabled for cross-origin requests
+- Input validation and sanitization
+- SQL injection prevention with parameterized queries
+- Graceful error handling without exposing internal details
+
+## Monitoring
+
+- Application logs include detailed error information
+- Health check endpoint for load balancer monitoring
+- Database connection status tracking
+- Automatic reconnection handling
+
+## AWS Architecture
 
 ### Services Used 🛠
-* Amazon EC2: Hosts the web application on two instances for redundancy and performance. [Compute]
-* Amazon RDS: Provides a managed relational database (MySQL) for application data. [Database]
-* Application Load Balancer (ALB): Distributes traffic across EC2 instances for scalability and reliability. [Networking]
-* Amazon VPC: Ensures secure networking with separate subnets for EC2 and RDS. [Networking]
-* IAM Roles and Policies: Grants necessary permissions for secure interactions between services. [Security]
-* Security Groups: Controls traffic flow between ALB, EC2, and RDS to enforce security. [Security]
-
-### Architectural Diagram ✍️
-<img width="1381" height="741" alt="image" src="https://github.com/user-attachments/assets/ab761bba-1257-4f74-89dd-652b1a75c8e1" />
-
-### Estimated Time & Cost ⚙️
-* This project is estimated to take about 2-3 hours
-* Cost: Free Tier Eligible (ALB costs according to the usage time)
-
-### Steps to be performed:
-In the next few lessons, we'll be going through the following steps.
-
-* Pre-requisites
-* Setup VPC and Networking
-* Database Layer - Setup RDS 
-* Application Layer - Setup EC2 and Load balancer
+* Amazon EC2: Hosts the web application on two instances for redundancy and performance
+* Amazon RDS: Provides a managed relational database (MySQL) for application data
+* Application Load Balancer (ALB): Distributes traffic across EC2 instances for scalability and reliability
+* Amazon VPC: Ensures secure networking with separate subnets for EC2 and RDS
+* IAM Roles and Policies: Grants necessary permissions for secure interactions between services
+* Security Groups: Controls traffic flow between ALB, EC2, and RDS to enforce security
